@@ -1,0 +1,174 @@
+service: mms
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ap-south-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action: dynamodb:*
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Users
+        AttributeDefinitions:
+          - AttributeName: user_id
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: user_id
+            KeyType: HASH
+          - AttributeName: email
+            KeyType: RANGE  # If email is your sort key
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    IndentsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Indents
+        AttributeDefinitions:
+          - AttributeName: indent_id
+            AttributeType: S
+          - AttributeName: user_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: indent_id
+            KeyType: HASH
+          - AttributeName: user_id
+            KeyType: RANGE  # If user_id is your sort key
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+
+    IndentApprovalsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: IndentApprovals
+        AttributeDefinitions:
+          - AttributeName: approval_id
+            AttributeType: S
+          - AttributeName: indent_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: approval_id
+            KeyType: HASH
+          - AttributeName: indent_id
+            KeyType: RANGE  # If indent_id is your sort key
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+#     StockTable:
+#       Type: AWS::DynamoDB::Table
+#       Properties:
+#         TableName: MyStockTable
+#         AttributeDefinitions:
+#           - AttributeName: item_id
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: item_id
+#             KeyType: HASH
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 5
+#           WriteCapacityUnits: 5
+
+
+functions:
+  createUser:
+    handler: handlers/users.createUser
+    events:
+      - http:
+          path: users
+          method: post
+
+  createIndent:
+    handler: handlers/indents.createIndent
+    events:
+      - http:
+          path: indents
+          method: post
+
+  createApproval:
+    handler: handlers/indentApprovals.createApproval
+    events:
+      - http:
+          path: approvals
+          method: post
+
+  # addItemToStock:
+  #   handler: handlers/stock.addItemToStock
+  #   events:
+  #     - http:
+  #         path: stock
+  #         method: post
+
+  listUsers:  
+    handler: handlers/users.listUsers
+    events:
+      - http:
+          path: users
+          method: get
+
+  getUser:
+    handler: handlers/users.getUser
+    events:
+      - http:
+          path: users/{id}
+          method: get
+
+  updateIndent:
+    handler: handlers/indents.updateIndent
+    events:
+      - http:
+          path: indents/{id}
+          method: put
+
+  listIndents:
+    handler: handlers/indents.listIndents
+    events:
+      - http:
+          path: indents
+          method: get
+
+  getIndent:
+    handler: handlers/indents.getIndent
+    events:
+      - http:
+          path: indents/{id}
+          method: get
+
+  listApprovals:
+    handler: handlers/indentApprovals.listApprovals
+    events:
+      - http:
+          path: approvals
+          method: get
+
+  getApproval:
+    handler: handlers/indentApprovals.getApproval
+    events:
+      - http:
+          path: approvals/{id}
+          method: get
+
+  # listStockItems:
+  #   handler: handlers/stock.listStockItems
+  #   events:
+  #     - http:
+  #         path: stock
+  #         method: get
+
+  # getStockItem:
+  #   handler: handlers/stock.getStockItem
+  #   events:
+  #     - http:
+  #         path: stock/{id}
+  #         method: get  
