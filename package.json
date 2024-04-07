@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dynamodb": "serverless dynamodb start --migrate --seed",
+    "start": "npm run start:dynamodb & serverless offline start"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +13,10 @@
   "dependencies": {
     "aws-sdk": "^2.1591.0",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "dynamodb-local": "^0.0.34",
+    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-offline": "^13.3.3"
   }
 }

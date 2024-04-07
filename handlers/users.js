@@ -2,7 +2,7 @@
 
 const AWS = require('aws-sdk');
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
-const uuidv4 = require('uuid/v4'); // Import uuid/v4
+// const uuidv4 = require('uuid/v4'); // Import uuid/v4
 
 module.exports.createUser = async (event) => {
   try {
@@ -11,7 +11,7 @@ module.exports.createUser = async (event) => {
     const params = {
       TableName: 'Users',
       Item: {
-        user_id: uuidv4(),
+        // user_id: uuidv4(),
         username,
         password: hashAndSalt(password), // Implement your own hash and salt function
         role,
@@ -39,6 +39,7 @@ module.exports.createUser = async (event) => {
 
 module.exports.listUsers = async () => {
   try {
+    console.log('listUsers')
     const params = {
       TableName: 'Users',
     };

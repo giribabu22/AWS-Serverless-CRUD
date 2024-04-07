@@ -8,6 +8,9 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action: dynamodb:*
+      Resource: "arn:aws:dynamodb:ap-south-1:533267253132:table/*"
+plugins:
+  - serverless-offline
 
 resources:
   Resources:
